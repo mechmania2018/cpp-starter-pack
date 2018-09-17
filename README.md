@@ -8,7 +8,7 @@ Here's all the code you need to get started with making a bot for Mechmania in C
 2. Make sure you have Docker installed. Instructions are [here](https://docs.docker.com/install/) and feel free to get our help with this.
 3. Get the `mm` cli tools. You're going to need these when developing and submitting you bot for the tournament.
  * Make sure to get Node first
- * Then, simply run `npm install -g mm-cli`
+ * Then, simply run `npm install -g mechmania`
  * Test your installation by running `mm version`
 
 # Setup
