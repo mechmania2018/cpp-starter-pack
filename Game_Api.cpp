@@ -45,7 +45,6 @@ Game_Api::Monster::Monster(string name, int health, string stance, int speed,  n
 void Game_Api::Player::update(json player_json) {
     //remove unit from previous location in case it has moved
     if (player_json["Location"] != this->_location) {
-      std::cerr << "location changed" << "\n";
         Node& prev_location = _api->nodes[_location];
         for (unsigned i = 0; i < prev_location.players.size(); i++) {
             if (prev_location.players[i] == this) {
@@ -181,4 +180,8 @@ Game_Api::Player* Game_Api::get_opponent() {
     } else {
         return _player1;
     }
+}
+
+void Game_Api::log(string message) {
+    std::cerr << message << "\n";
 }

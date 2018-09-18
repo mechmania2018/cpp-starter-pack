@@ -26,10 +26,6 @@ int main() {
 			api = new Game_Api(my_player_num, data["map"]);
 		} else {
 			 api->update(data["game_data"]);
-			 if (my_player_num == 1) {
-				 cerr << "player 1 destination: " << api->_player1->_destination << "\n";
-				 cerr << "player 1 location: " << api->_player1->_location << "\n";
-			 }
              vector<int> adjacent = api->get_adjacent_nodes(api->get_self()->_location);
              api->submit_decision(adjacent[0], "Rock");
 		 	 fflush(stdout);
