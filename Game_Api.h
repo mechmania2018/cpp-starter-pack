@@ -17,20 +17,6 @@ typedef int node_id_t;
 class Game_Api {
 
 private:
-    // struct Unit { //make everything const
-    //     Unit(string name, int h, int k, int s, node_id_t loc, Game_Api* api);
-    //     void update(json unit_json);
-    //     string _name;
-    //     int _health;
-    //     int _kung_fu;
-    //     int _speed;
-    //     int _movement_counter;
-    //     node_id_t _location;
-    //     node_id_t _destination;
-    //     int _exp;
-    //     int _victory_points;
-    //     Game_Api* _api;
-    // };
 
     struct DeathEffects {
         int _rock;
@@ -92,6 +78,7 @@ public:
     Player* get_self();
     Player* get_opponent();
     vector<int> get_adjacent_nodes(int location);
+    void log(string message);
 private:
     int _this_player_number;
 };
