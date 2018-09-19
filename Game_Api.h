@@ -16,7 +16,7 @@ using json = nlohmann::json;
 typedef int node_id_t;
 class Game_Api {
 
-private:
+public:
 
     struct DeathEffects {
         int _rock;
@@ -28,6 +28,7 @@ private:
 
     struct Monster {
         Monster(string name, int health, string stance, int speed, node_id_t location, int attack, json deathfx, Game_Api * api);
+        Monster();
         void update(json unit_json);
         bool _dead;
         string _name;
@@ -67,20 +68,29 @@ private:
     };
 
 public:
-    Player * _player1;
-    Player * _player2;
-    vector<Monster> all_monsters; //doesnt include players
-    vector<Node> nodes;
     explicit Game_Api(int player_number, string json_str);
     void update(json json_str);
-    void print();
-    void submit_decision(int destination, string stance);
-    Player* get_self();
-    Player* get_opponent();
-    vector<int> get_adjacent_nodes(int location);
     void log(string message);
+    void submit_decision(int destination, string stance);
+    Player get_self();
+    Player get_opponent();
+    vector<node_id_t> get_adjacent_nodes(int location);
+    vector<vector<node_id_t>> shortest_paths(node_id_t start, node_id_t destination);
+    //int get_duel_turn_num();
+    int get_turn_num();
+    vector<Monster> get_all_monsters();
+    bool has_monster(node_id_t node);
+    Monster get_monster(node_id_t node);
+    vector<Monster> nearest_monsters(node_id_t node, int mode);
+    vector<Monster> nearest_monsters(node_id_t node, string monster_type, int search_mode);
+
 private:
     int _this_player_number;
+    vector<Monster> all_monsters; //doesnt include players
+    vector<Node> nodes;
+    Player _player1;
+    Player _player2;
+    int _turn_number;
 };
 
 
