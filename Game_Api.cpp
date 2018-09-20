@@ -16,6 +16,7 @@ using std::vector;
 using std::map;
 using std::cerr;
 
+//Player constructor with parameters
 Game_Api::Player::Player(string name, int health, int speed, node_id_t location, int movement_counter, Game_Api* api) {
     this->_name = name;
     this->_health = health;
@@ -30,6 +31,7 @@ Game_Api::Player::Player(string name, int health, int speed, node_id_t location,
     this->_scissors = 0;
 }
 
+//Monster constructor with parameters
 Game_Api::Monster::Monster(string name, int health, string stance, int speed,  node_id_t location, int attack, json deathfx_json, Game_Api * api) {
     json death_fx = deathfx_json;
     this->_death_effects._health = deathfx_json["Health"];
@@ -49,6 +51,10 @@ Game_Api::Monster::Monster(string name, int health, string stance, int speed,  n
     this->_api = api;
 }
 
+/*Default constructor for Monster.
+Monsters are only constructed this way when your script asks for Monsters at
+a Node that has no monsters. You should ignore any monsters that have these properties.
+*/
 Game_Api::Monster::Monster() {
     this->_name = "";
     this->_health = 0;
@@ -61,6 +67,9 @@ Game_Api::Monster::Monster() {
     this->_api = NULL;
 }
 
+/*
+Updates the player properties given a json string
+*/
 void Game_Api::Player::update(json player_json) {
     //remove unit from previous location in case it has moved
     if (player_json["Location"] != this->_location) {
@@ -84,10 +93,11 @@ void Game_Api::Player::update(json player_json) {
     this->_scissors = player_json["Scissors"];
     this->_speed = player_json["Speed"];
     this->_stance = player_json["Stance"];
-
-    //missing exp and victory points
 }
 
+/*
+Updates the Monster properties given a json string
+*/
 void Game_Api::Monster::update(json monster_json) {
     int counter = monster_json["Movement Counter"];
     int speed = monster_json["Speed"];
@@ -111,6 +121,11 @@ void Game_Api::Monster::update(json monster_json) {
     this->_stance = monster_json["Stance"];
 }
 
+/*
+Constructor for the Game_Api. The Game_Api object stores the current state of the game.
+Initializes the state given a json string and stores which player is using this API.
+This should only be called ONCE PER GAME.
+*/
 Game_Api::Game_Api(int player_number, string json_string) : _player1("player1", INIT_PLAYER_HEALTH, 0, 0, 7, this), _player2("player2", INIT_PLAYER_HEALTH, 0, 0, 7, this) {
     _this_player_number = player_number;
     _turn_number = 0;
@@ -122,9 +137,6 @@ Game_Api::Game_Api(int player_number, string json_string) : _player1("player1", 
     for (node_id_t i = 0; i < (int)nodes_json.size(); i++) {
         nodes.push_back(Node());
     }
-
-    // _player1 = Player("player1", INIT_PLAYER_HEALTH, 0, 0, 7, this);
-    // _player2 = Player("player2", INIT_PLAYER_HEALTH, 0, 0, 7, this);
 
     nodes[0].players.push_back(&_player1);
     nodes[0].players.push_back(&_player2);
@@ -146,6 +158,10 @@ Game_Api::Game_Api(int player_number, string json_string) : _player1("player1", 
     }
 }
 
+/*
+Updates the state of the game stored in the Game_Api object.
+This function should be called ONCE PER TURN.
+*/
 void Game_Api::update(json json_string) {
     _turn_number++;
     _player1.update(json_string[0]);
@@ -155,7 +171,10 @@ void Game_Api::update(json json_string) {
     }
 }
 
-vector<int> Game_Api::get_adjacent_nodes(int node_location) {
+/*
+Returns the IDs of the nodes adjacent to the provided node_location
+*/
+vector<node_id_t> Game_Api::get_adjacent_nodes(node_id_t node_location) {
     vector<int> adjacent;
     for (node_id_t node_id : nodes[node_location].adjacent) {
       adjacent.push_back(node_id);
@@ -163,10 +182,19 @@ vector<int> Game_Api::get_adjacent_nodes(int node_location) {
     return adjacent;
 }
 
-void Game_Api::submit_decision(int destination, string stance) {
+/*
+Use this to send your decision for the current turn.
+Desination is the node you want to travel to (MUST BE ADJACENT TO YOUR CURRENT LOCATION)
+Stance is the stance you want to switch to
+Only call this function ONCE PER TURN.
+*/
+void Game_Api::submit_decision(node_id_t destination, string stance) {
     printf("{\"Stance\": \"%s\", \"Dest\": %d}\n", stance.c_str(), destination);
 }
 
+/*
+Returns a Player object that represents your bot's current state
+*/
 Game_Api::Player Game_Api::get_self() {
     if (_this_player_number == 1) {
         return _player1;
@@ -175,6 +203,9 @@ Game_Api::Player Game_Api::get_self() {
     }
 }
 
+/*
+Returns a Player object that represents your opponent's bot current state
+*/
 Game_Api::Player Game_Api::get_opponent() {
     if (_this_player_number == 1) {
         return _player2;
@@ -183,23 +214,39 @@ Game_Api::Player Game_Api::get_opponent() {
     }
 }
 
-
+/*
+Returns a vector of paths where each path is a vector of node IDs.
+Each path in the vector represents one of multiple shortest paths from the start node
+to the destination node.
+*/
 vector<vector<node_id_t>> Game_Api::shortest_paths(node_id_t start, node_id_t destination) {
-    queue<node_id_t> q;
-    vector<bool> visited(nodes.size());
-    for (bool b : visited) {
-        b = false;
+    vector<int> distance(nodes.size());
+    for (int& i : distance) {
+        i = -1;
     }
+
     map<node_id_t, vector<node_id_t>> parents;
+    vector<bool> visited(nodes.size());
+    for (size_t i = 0; i < nodes.size(); i++) {
+        visited[i] = false;
+    }
+
+    queue<node_id_t> q;
     q.push(start);
-    while(visited[destination] == false) {
+    distance[start] = 0;
+    while(!visited[destination]) {
         node_id_t current = q.front();
         q.pop();
-        if (visited[current]) continue;
-        for(node_id_t node : nodes[current].adjacent) {
-            if (visited[node]) continue;
-            q.push(node);
-            parents[node].push_back(current);
+        for(node_id_t adj : nodes[current].adjacent) {
+            if (!visited[adj]) {
+                if (distance[adj] == -1) {
+                    distance[adj] = distance[current] + 1;
+                    parents[adj].push_back(current);
+                    q.push(adj);
+                } else if (distance[adj] == distance[current] + 1) {
+                    parents[adj].push_back(current);
+                }
+            }
         }
         visited[current] = true;
     }
@@ -230,17 +277,24 @@ vector<vector<node_id_t>> Game_Api::shortest_paths(node_id_t start, node_id_t de
     return paths;
 }
 
+/*
+Logs the string message to stderr for debugging.
+*/
 void Game_Api::log(string message) {
     cerr << "Player " <<  _this_player_number << ":" << message << "\n";
 }
 
-bool Game_Api::has_monster(node_id_t location) {
-    if (nodes[location].monsters.size() > 0) {
-        return true;
-    }
-    return false;
-}
-
+/*
+Returns a vector with all the monsters nearest to a location.
+If there is a monster at the given location, this monster will be returned.
+Otherwise, this function will search nodes adjacent to the given location until
+a Monster is found. Once a Monster is found the function will search for monsters
+on other nodes that are the same distance away from starting location.
+Mode indicates the type of search.
+Mode 0 = searches all monsters
+Mode 1 = only searches for live monsters
+Mode 2 = only searches for dead monsters
+*/
 vector<Game_Api::Monster> Game_Api::nearest_monsters(node_id_t node, int mode) { //0 for dead, 1 for alive, 2 for both
     vector<Monster> nearest_monsters;
     vector<bool> searched(nodes.size());
@@ -256,7 +310,7 @@ vector<Game_Api::Monster> Game_Api::nearest_monsters(node_id_t node, int mode) {
     while (!found_monster) {
         vector<node_id_t> new_nodes_to_search;
             for (node_id_t node_to_search : nodes_to_search) {
-                if (has_monster(node_to_search) && mode == 2){
+                if (has_monster(node_to_search) && mode == 0){
                      found_monster = true;
                      for (Monster* monster : nodes[node_to_search].monsters) {
                          nearest_monsters.push_back(*monster);
@@ -268,7 +322,7 @@ vector<Game_Api::Monster> Game_Api::nearest_monsters(node_id_t node, int mode) {
                              found_monster = true;
                          }
                      }
-                 } else if (has_monster(node_to_search) && mode == 0) {
+                 } else if (has_monster(node_to_search) && mode == 2) {
                      for (Monster* monster : nodes[node_to_search].monsters) {
                          if (monster->_dead) {
                              nearest_monsters.push_back(*monster);
@@ -294,7 +348,19 @@ vector<Game_Api::Monster> Game_Api::nearest_monsters(node_id_t node, int mode) {
     return nearest_monsters;
 }
 
-vector<Game_Api::Monster> Game_Api::nearest_monsters(node_id_t node, string type, int mode) { //0 for dead, 1 for alive, 2 for both
+/*
+Returns a vector with all the monsters nearest to a location.
+If there is a monster at the given location, this monster will be returned.
+Otherwise, this function will search nodes adjacent to the given location until
+a Monster is found. Once a Monster is found the function will search for monsters
+on other nodes that are the same distance away from starting location.
+Mode indicates the type of search.
+Mode 0 = searches all monsters
+Mode 1 = only searches for live monsters
+Mode 2 = only searches for dead monsters
+Type indicates the type of monster to search for
+*/
+vector<Game_Api::Monster> Game_Api::nearest_monsters(node_id_t node, string type, int mode) {
     vector<Monster> nearest_monsters;
     unsigned int searched_count = 0;
     vector<bool> searched(nodes.size());
@@ -309,7 +375,7 @@ vector<Game_Api::Monster> Game_Api::nearest_monsters(node_id_t node, string type
     while (!found_monster) {
         vector<node_id_t> new_nodes_to_search;
             for (node_id_t node_to_search : nodes_to_search) {
-                if (has_monster(node_to_search) && mode == 2){
+                if (has_monster(node_to_search) && mode == 0){
                      for (Monster* monster : nodes[node_to_search].monsters) {
                          if (monster->_name == type) {
                              nearest_monsters.push_back(*monster);
@@ -323,7 +389,7 @@ vector<Game_Api::Monster> Game_Api::nearest_monsters(node_id_t node, string type
                              found_monster = true;
                          }
                      }
-                 } else if (has_monster(node_to_search) && mode == 0) {
+                 } else if (has_monster(node_to_search) && mode == 2) {
                      for (Monster* monster : nodes[node_to_search].monsters) {
                          if (monster->_dead && monster->_name == type) {
                              nearest_monsters.push_back(*monster);
@@ -349,17 +415,47 @@ vector<Game_Api::Monster> Game_Api::nearest_monsters(node_id_t node, string type
     return nearest_monsters;
 }
 
-Game_Api::Monster Game_Api::get_monster(node_id_t node) {
-    if (has_monster(node)){
-        Monster* mon = nodes[node].monsters[0];
+
+/*
+Checks whether or not there is a Monster at a particular node ID.
+*/
+bool Game_Api::has_monster(node_id_t location) {
+    if (nodes[location].monsters.size() > 0) {
+        return true;
+    }
+    return false;
+}
+
+/*
+Returns Monster(s) at provided node ID.
+If there is no Monster at the provided location an empty Monster object will
+be returned. To prevent this, check beforehand with has_monster().
+*/
+Game_Api::Monster Game_Api::get_monster(node_id_t location) {
+    if (has_monster(location)){
+        Monster* mon = nodes[location].monsters[0];
         return *mon;
     } else return Monster();
 }
 
+/*
+Returns a vector containing all the current Monsters in the game.
+*/
 vector<Game_Api::Monster> Game_Api::get_all_monsters() {
     return all_monsters;
 }
 
+/*
+Returns the number of the current turn.
+*/
 int Game_Api::get_turn_num() {
     return _turn_number;
+}
+
+/*
+Returns the number of the turn in which your bot and your opponent's bot will be
+confined to a single node and forced to fight until one is terminated.
+*/
+int Game_Api::get_duel_turn_num() {
+    return 30;
 }

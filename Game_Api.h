@@ -71,12 +71,12 @@ public:
     explicit Game_Api(int player_number, string json_str);
     void update(json json_str);
     void log(string message);
-    void submit_decision(int destination, string stance);
+    void submit_decision(node_id_t destination, string stance);
     Player get_self();
     Player get_opponent();
-    vector<node_id_t> get_adjacent_nodes(int location);
+    vector<node_id_t> get_adjacent_nodes(node_id_t location);
     vector<vector<node_id_t>> shortest_paths(node_id_t start, node_id_t destination);
-    //int get_duel_turn_num();
+    int get_duel_turn_num();
     int get_turn_num();
     vector<Monster> get_all_monsters();
     bool has_monster(node_id_t node);
@@ -86,7 +86,7 @@ public:
 
 private:
     int _this_player_number;
-    vector<Monster> all_monsters; //doesnt include players
+    vector<Monster> all_monsters;
     vector<Node> nodes;
     Player _player1;
     Player _player2;
