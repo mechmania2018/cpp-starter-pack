@@ -14,7 +14,7 @@ Here's all the code you need to get started with making a bot for Mechmania in C
    * Open the installer and follow the instructions to install Docker
    * If you don't already have Oracle VM VirtualBox, you will also go through a series of prompts to install VirtualBox.
    * Once Docker is installed, open the "Docker Quickstart Terminal" application (It will take a few minutes to get set up the first time you start it.  This process may involve more Windows prompts for permissions.)
-3. Within Docker, run `pm install -g mechmania`.  This gets the `mm` command line tools, which are used to test and submit bots for the tournament.
+3. Within Docker, run `npm install -g mechmania`.  This gets the `mm` command line tools, which are used to test and submit bots for the tournament.
 
 # Mac Pre-Setup
 
