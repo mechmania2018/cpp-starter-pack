@@ -53,7 +53,6 @@ public:
         int _speed;
         node_id_t _location;
         node_id_t _destination;
-        DeathEffects _death_effects;
         int _movement_counter;
         int _rock;
         int _paper;
