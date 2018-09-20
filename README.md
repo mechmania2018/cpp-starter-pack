@@ -54,7 +54,7 @@ There is also a type that is used in the API called **node_id_t**. This type is 
 - `_scissors` : `int` -- the player's Scissors attack stat
 
 ##### The following fields are in the `Monster` class:
-- `name` : `str` -- represents the class of this monster.  All monsters with the same name should have the same base stats (health, attack, respawn_rate, death_effects, and attack)
+- `_name` : `str` -- represents the class of this monster.  All monsters with the same name should have the same base stats (health, attack, respawn_rate, death_effects, and attack)
 - `_stance` : `str`
 - `_health` : `int`
 - `_respawn_rate` : `int` -- number of turns for the monster to respawn after dying
@@ -114,12 +114,12 @@ Monster `get_monster(node_id_t node)`
 Returns a `Monster` struct for the monster located at `node`.  It is recommended to check if there is a monster at `node` first, using `has_monster(node)`.  If you call `get_monster` for a node without a monster, an invalid monster will be returned.
 **Also a COPY of the data held within the API. Do not use the same returned Monster object for multiple turns!**.
 
-vector<Monster> `nearest_monsters(node_id_t node, int search_type)`
+vector<Monster> `nearest_monsters(node_id_t node, int search_mode)`
 Returns a list of `Monster` structs for all monsters nearest to `node` (including on `node` itself), only considering monsters according to the `search_mode` parameter:
 - `search_mode = 0`: Searches all monsters
 - `search_mode = 1`: Only searches for live monsters
 - `search_mode = 2`: Only searches for dead monsters
 
-vector<Monster> `nearest_monsters(node_id_t node, string name, int search_type)`
+vector<Monster> `nearest_monsters(node_id_t node, string name, int search_mode)`
 Same as `nearest_monsters`, but only considers monsters with name `name`. 
 
