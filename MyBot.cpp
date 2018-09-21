@@ -4,6 +4,10 @@
 #include <time.h>
 #include "Game_Api.h"
 using json = nlohmann::json;
+using json = nlohmann::json;
+using Game_Api::Player;
+using Game_Api::Monster;
+using Game_Api::DeathEffects;
 
 #define RESPONSE_SECS 1
 #define RESPONSE_NSECS 0
@@ -25,9 +29,9 @@ int main() {
 		} else {
 			 api->update(data["game_data"]);
 		 }
-        
-            //YOUR CODE HERE 
-        
+
+            //YOUR CODE HERE
+
              api->submit_decision(//YOUR DECISION HERE);
 		 	 fflush(stdout);
 		}
