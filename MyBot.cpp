@@ -28,13 +28,13 @@ int main() {
 			my_player_num = data["player_id"];
 			api = new Game_Api(my_player_num, data["map"]);
 		} else {
-			 api->update(data["game_data"]);
+			api->update(data["game_data"]);
 
 			 //YOUR CODE HERE
 
-             api->submit_decision(0,"Rock"); //CHANGE THIS
-		 	 fflush(stdout);
-			 free(buf);
-	    }
-	  }
-	}
+             		api->submit_decision(0,"Rock"); //CHANGE THIS
+             		fflush(stdout);
+			free(buf);
+	       }
+	     }
+	   }
