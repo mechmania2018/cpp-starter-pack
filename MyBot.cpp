@@ -14,9 +14,9 @@ using DeathEffects = Game_Api::DeathEffects;
 
 #include <iostream>
 using namespace std;
+//You may add global variables and helper functions
 
 int main() {
-	//YOU MAY ADD VARIABLES HERE
 	Game_Api * api;
 	int my_player_num = 0;
 	while(1){
