@@ -4,10 +4,10 @@
 #include <time.h>
 #include "Game_Api.h"
 using json = nlohmann::json;
-using json = nlohmann::json;
-using Game_Api::Player;
-using Game_Api::Monster;
-using Game_Api::DeathEffects;
+using Player = Game_Api::Player;
+using Monster = Game_Api::Monster;
+using DeathEffects = Game_Api::DeathEffects;
+
 
 #define RESPONSE_SECS 1
 #define RESPONSE_NSECS 0
@@ -16,6 +16,7 @@ using Game_Api::DeathEffects;
 using namespace std;
 
 int main() {
+	//YOU MAY ADD VARIABLES HERE
 	Game_Api * api;
 	int my_player_num = 0;
 	while(1){
@@ -28,13 +29,12 @@ int main() {
 			api = new Game_Api(my_player_num, data["map"]);
 		} else {
 			 api->update(data["game_data"]);
-		 }
 
-            //YOUR CODE HERE
+			 //YOUR CODE HERE
 
-             api->submit_decision(//YOUR DECISION HERE);
+             api->submit_decision(0,"Rock"); //CHANGE THIS
 		 	 fflush(stdout);
-		}
-		free(buf);
+			 free(buf);
+	    }
+	  }
 	}
-}

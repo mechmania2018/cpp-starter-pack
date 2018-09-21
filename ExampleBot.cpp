@@ -31,19 +31,19 @@ int main() {
 			my_player_num = data["player_id"];
 			api = new Game_Api(my_player_num, data["map"]);
 		} else {
-			 api->update(data["game_data"]);
-		 }
+			api->update(data["game_data"]);
 		 	Player me = api->get_self();
 			Player opponent = api->get_opponent();
-			node_id_t destination_decision = me._location; //default decision
-			string stance = me._stance; //default decision
-
-			if (!on_route) { //you dont want to perform the operation below every turn. Only if you have reached your final destination
+			node_id_t destination_decision = me._location;
+			string stance = "Rock";
+			//you dont want to perform the operation below every turn. Only if you have reached your final destination
+			if (!on_route) {
 			if (opponent._rock >= me._rock) {
 				//Want to kill the nearest monster of type "Paper 6"
-				vector<Monster> monsters = api->nearest_monsters(me._location, "Paper 6", 0);
-				if (monsters.size() > 0)  { //if any monsters of that type were found
-					Monster target = monsters[0]; //arbitrary choice
+				vector<Monster> monsters = api->nearest_monsters(me._location, "Paper 18", 0);
+				//if any monsters of that type were found
+				if (monsters.size() > 0)  {
+					Monster target = monsters[0];
 					vector<vector<node_id_t>> shortest_paths = api->shortest_paths(me._location, target._location);
 
 					//Want to take the least dangerous path, so sum monster attacks on each path
@@ -82,10 +82,11 @@ int main() {
 					 destination_decision = desired_path[current_steps_taken_in_path];
 				 } else {
 		     	     destination_decision = desired_path[current_steps_taken_in_path];
-			 }
+			     }
 			 }
              api->submit_decision(destination_decision, stance);
 		 	 fflush(stdout);
 			 free(buf);
 		}
 	}
+}

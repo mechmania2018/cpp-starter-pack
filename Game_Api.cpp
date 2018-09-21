@@ -73,7 +73,6 @@ Updates the player properties given a json string
 void Game_Api::Player::update(json player_json) {
     //remove unit from previous location in case it has moved
     if (player_json["Location"] != this->_location) {
-      std::cerr << "location changed" << "\n";
         Node& prev_location = _api->nodes[_location];
         for (unsigned i = 0; i < prev_location.players.size(); i++) {
             if (prev_location.players[i] == this) {
@@ -457,5 +456,5 @@ Returns the number of the turn in which your bot and your opponent's bot will be
 confined to a single node and forced to fight until one is terminated.
 */
 int Game_Api::get_duel_turn_num() {
-    return 30;
+    return 300;
 }

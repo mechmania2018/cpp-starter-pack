@@ -7,7 +7,7 @@
 #include "includes/json.hpp"
 
 #define BASE_MOVEMENT_COUNTER 7
-#define INIT_PLAYER_HEALTH 10
+#define INIT_PLAYER_HEALTH 100
 
 using std::string;
 using std::vector;
