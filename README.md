@@ -93,7 +93,7 @@ Returns a vector of all the monsters in the game. **This vector contains COPIES 
 Returns a `Player` object representing the player you are controlling. **Also a COPY of the data held within the API. Do not use the same returned Player object for multiple turns!**.
 
 `Player get_opponent()`
-Returns a `Player` object representing your opponent. **Also a COPY of the data held within the API. Do not use the same returned Player object for multiple turns!**.
+Returns a `Player` object representing your opponent. (Note: the opponent's destination will always appear to be -1.  This is by design -- neither player can see the other's destination) **Also a COPY of the data held within the API. Do not use the same returned Player object for multiple turns!**.
 
 `void submit_decision(node_id_t destination, string stance)`
 Takes an `int` `destination` and a string `stance` and sends this decision to the game engine.  You should call this method exactly once per turn.
