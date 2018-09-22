@@ -56,7 +56,7 @@ There is also a type that is used in the API called **node_id_t**. This type is 
 - `_movement_counter` : `int` -- the movement counter will go down by 1 each turn.  Once a player's movement counter is equal to their speed, they will move to their destination.
 - `_location` : `int` (or `node_id_t`)
 - `_destination` : `int` (or `node_id_t`) (Note: on the first turn, the player's destination will be -1, since the player hasn't yet set a destination)
-- `_dead` : `bool` (This should always be `True`, since once a player dies, the game is over)
+- `_dead` : `bool` (This should always be `False`, since once a player dies, the game is over)
 - `_rock` : `int` -- the player's Rock attack stat
 - `_paper` : `int` -- the player's Paper attack stat
 - `_scissors` : `int` -- the player's Scissors attack stat
