@@ -20,10 +20,11 @@ Here's all the code you need to get started with making a bot for Mechmania in C
 
 1. First, install Node. To do this, go [here](https://nodejs.org/en/download/) and download the macOS Installer.
 
-2. Next, install Docker Toolbox for Mac.
-   * Go to [this](https://docs.docker.com/toolbox/toolbox_install_mac/) site and click the button that says "Get Docker Toolbox for Mac".
+2. Next, install Docker for Mac.
+   * You can find the installer [here](https://store.docker.com/editions/community/docker-ce-desktop-mac).
    * Open the installer and follow the instructions to install Docker
-3. Within Docker, run `npm install -g mechmania`.  This gets the `mm` command line tools, which are used to test and submit bots for the tournament.
+
+3. Run `npm install -g mechmania`.  This gets the `mm` command line tools, which are used to test and submit bots for the tournament.
 
 # Setup
 
